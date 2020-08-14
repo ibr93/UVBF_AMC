@@ -2,22 +2,24 @@
 #include "operation.h"
 
 int main(int argc, char** argv) {
+	int nb_thread = get_thread_count();
 	// On commence par initialiser le g√©n√©rateur de nombre pseudo-al√©atoires.
     srand( time( NULL ) );
 	/* DÈclaration des tableaux t1 et t2 */ 
-	int *t1,*t2, *t3;
+	int *t1,*t2, *t3, *t3_posix, *t3_omp;
 	t3 = allouer_espace_memoire();
-	puts("Initialisation du tableau T1");
+	t3_posix = allouer_espace_memoire();
+	t3_omp = allouer_espace_memoire();
+//	puts("Debut d'initialisation du tableau T1");
 	t1 = initialiserTableau();
-	puts("Initialisation du tableau T2");
+//	puts("Fin d'initialisation du tableau T1");
+//	puts("Debut d'initialisation du tableau T1");
 	t2 = initialiserTableau();
-	
-	afficherMenu();
-	
-	calculer_t3_sequenciel(t1,t2, t3);
-	// TODO suprimÈ
-	free(t1);
-	free(t2);
-	free(t3);
+//	puts("Debut d'initialisation du tableau T2");
+//	afficherMenu();
+//	calculer_t3(t1,t2, t3);
+	calculer_t3_posix(t1,t2, t3_posix, nb_thread);
+	// Liberation des memoires allouer
+	free(t1);free(t2);free(t3);free(t3_omp);free(t3_posix);
 	return 0;
 }
