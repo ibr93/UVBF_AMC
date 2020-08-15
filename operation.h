@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
+#include <omp.h>
 
 /* Déclaration des constantes */
 #define TABLE_SIZE 100000000
@@ -25,7 +26,7 @@ typedef struct {
 int *initialiserTableau();
 void calculer_t3(int* t1,int* t2, int* t3);
 void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread);
-char *calculer_t3_omp(int tableau[TABLE_SIZE]);
+char *calculer_t3_omp(int* t1,int* t2, int* t3);
 int generate_random_value();
 int *allouer_espace_memoire();
 int *allouer_espace_memoire_avec_param(int nbr);

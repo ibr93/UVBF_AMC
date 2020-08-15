@@ -63,7 +63,7 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 		create_task(&threads[i],temp, temp + nbr_element, t1, t2, t3 );
 	}
 	
-	puts("Fin de création des threads");	
+	//puts("Fin de création des threads");	
 	if(has_restant){
 		somme += wait_task(thread_restant);
 	}
@@ -71,20 +71,31 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	for(i=0 ; i<nb_thread; i++){
 		somme += wait_task(threads[i]);
 	}
-
+	moyenne =(float) somme / TABLE_SIZE;
 	fin = chrono();
 	time_elapse = calculer_temps_operation(debut, fin);
-	moyenne =(float) somme / TABLE_SIZE;
 	afficherResultat(somme, moyenne, time_elapse);
 	free(threads);
-	
 };
 
 /**
 *	La fonction est une version OpenMP de la fonction calculer_t3_sequenciel
 */
-char* calculer_t3_omp(int * tableau){
-	
+char* calculer_t3_omp(int* t1,int* t2, int* t3){
+	clock_t debut = chrono();
+	int somme = 0, i =0;
+	float moyenne = 0;
+	clock_t fin;
+	double time_elapse;
+	#pragma omp parallel for reduction(+:somme)
+	for(i = 0; i<TABLE_SIZE; i++){
+		t3[i]= t1[i] * t2[i];
+		somme += t3[i];
+	}
+	moyenne =(float) somme / TABLE_SIZE;
+	fin = chrono();
+	time_elapse = calculer_temps_operation(debut, fin);
+	afficherResultat(somme, moyenne, time_elapse);
 };
 
 /*
