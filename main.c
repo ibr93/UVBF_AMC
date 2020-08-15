@@ -10,15 +10,20 @@ int main(int argc, char** argv) {
 	t3 = allouer_espace_memoire();
 	t3_posix = allouer_espace_memoire();
 	t3_omp = allouer_espace_memoire();
-//	puts("Debut d'initialisation du tableau T1");
+	puts("Debut d'initialisation du tableau T1");
 	t1 = initialiserTableau();
-//	puts("Fin d'initialisation du tableau T1");
-//	puts("Debut d'initialisation du tableau T1");
+	puts("Fin d'initialisation du tableau T1");
+	puts("Debut d'initialisation du tableau T1");
 	t2 = initialiserTableau();
-//	puts("Debut d'initialisation du tableau T2");
-//	afficherMenu();
-//	calculer_t3(t1,t2, t3);
+	puts("Fin d'initialisation du tableau T2");
+	puts("************************************");
+	puts("Calcul sequencielle de T3");
+	calculer_t3(t1,t2, t3);
+	puts("************************************");
+	puts("************************************");
+	puts("Calcul POSIX de T3");
 	calculer_t3_posix(t1,t2, t3_posix, nb_thread);
+	puts("************************************");
 	// Liberation des memoires allouer
 	free(t1);free(t2);free(t3);free(t3_omp);free(t3_posix);
 	return 0;

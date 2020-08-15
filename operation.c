@@ -1,35 +1,6 @@
 /* Import des fichiers d'entête */
 #include "operation.h"
 
-/* La fonction permet d'afficher le menu utilisateur */
-void afficherMenu(){
-	int choice;
- 
-  //  do
-  //  {
-        printf("Menu\n\n");
-        printf("1. Sum\n");
-        printf("2. Rest\n");
-        printf("3. Exit\n");
-   /*     scanf("%d",&choice);
- 
-        switch(choice)
-        {
-            case 1: break;
-            case 2:  break;
-            case 3: printf("Quitting program!\n");
-                exit(0);
-                break;
-            default: printf("Invalid choice!\n");
-                break;
-        }*/
- 
-  //  } while (choice != 3);
- 	// free(t1);
-	// free(t2);
-};
-
-
 /* La fonction initialise un tableau et retourne un pointeur vers le tableau */
 int* initialiserTableau(){
 	
@@ -81,33 +52,31 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	int nbr_element_restant =TABLE_SIZE % nbr_element;
 	int has_restant = ((nbr_element * nb_thread )!= TABLE_SIZE);
 	int temp;
-	Operation op;
-	// Nous parcourrons le tableau des threads et lancons la création des threads
-	for(i=0 ; i<nb_thread; i++){
-		temp = i * nbr_element;
-		op =init_operation(temp, temp + nbr_element,t1, t2, t3 );
-		create_task(&threads[i],op );
-	}
 	
 	// nous vérifions s'il reste des reste tous tuples sont utilisés
 	if(has_restant){
-		op = init_operation(nbr_element * nb_thread, TABLE_SIZE,t1, t2, t3 );
-		create_task(&thread_restant,op);
+		create_task(&thread_restant,nbr_element * nb_thread, TABLE_SIZE, t1, t2,t3);
 	}
-	puts("Fin de création des threads");
+	// Nous parcourrons le tableau des threads et lancons la création des threads
+	for(i=0 ; i<nb_thread; i++){
+		temp = i * nbr_element;
+		create_task(&threads[i],temp, temp + nbr_element, t1, t2, t3 );
+	}
+	
+	puts("Fin de création des threads");	
+	if(has_restant){
+		somme += wait_task(thread_restant);
+	}
 	
 	for(i=0 ; i<nb_thread; i++){
-		printf("i %d\n",i);
-		wait_task(threads[i],NULL);
+		somme += wait_task(threads[i]);
 	}
-	if(has_restant){
-		wait_task(thread_restant,NULL);
-	}
+
 	fin = chrono();
 	time_elapse = calculer_temps_operation(debut, fin);
-	afficherResultat(somme, 0.0, time_elapse);
+	moyenne =(float) somme / TABLE_SIZE;
+	afficherResultat(somme, moyenne, time_elapse);
 	free(threads);
-	puts("end");
 	
 };
 
@@ -132,7 +101,7 @@ int* allouer_espace_memoire(){
 	int *tableau = (int*) calloc(TABLE_SIZE, sizeof(int));
     if(tableau == NULL)
     {
-        error_message("allouer_espace_memoire", "L'allocation de la mémoire à échoué" );
+        error_message("allouer_espace_memoire", "L'allocation de la memoire a echoue");
         exit(1);
     }
     return tableau;
@@ -142,6 +111,18 @@ int* allouer_espace_memoire(){
 */
 int *allouer_espace_memoire_avec_param(int nbr){
 	int *tableau = (int*) calloc(nbr, sizeof(int));
+    if(tableau == NULL)
+    {
+        error_message("allouer_espace_memoire_avec_param" , "L'allocation de la mémoire à échoué");
+        exit(1);
+    }
+    return tableau;
+}
+/*
+*	Cette fonction reserve de l'espace memoire correspondant a la valeur passé en paramètre et retourne une structure Operation
+*/
+Operation allouer_espace_memoire_struct_operation(int nbr){
+	Operation tableau = (Operation) calloc(nbr, sizeof(operation));
     if(tableau == NULL)
     {
         error_message("allouer_espace_memoire_avec_param" , "L'allocation de la mémoire à échoué");
@@ -183,6 +164,7 @@ double calculer_temps_operation(clock_t debut, clock_t fin){
 		debut = fin;
 		fin = temp;
 	}
+//	return (double)(fin - debut) / CLOCKS_PER_SEC;
 	return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
@@ -210,21 +192,23 @@ void afficherResultat(int somme, float moyenne, double time_elapse){
 *	il prend en parametre 
 */
 void *execute_task(void* args){
-	Operation op = (Operation) args;
+	Operation ak = (Operation) args;
 	int i;
-	for(i = op->min; i<op->max; i++){
-			op->t3[i]= op->t1[i] * op->t2[i];
-			op->somme += op->t3[i];
+	for(i = ak->min; i<ak->max; i++){
+			ak->t3[i]= ak->t1[i] * ak->t2[i];
+			ak->somme += ak->t3[i];
 	}
-	printf("\nSomme: %d", op->somme);
-	pthread_exit(NULL);
+//	printf("\nFom execute_task min: %d max:%d somme: %d", ak->min, ak->max, ak->somme);
+	pthread_exit((void *) ak);
 }
 /*
 *	Cette fonction permet de créer les processus
 */
-void create_task(pthread_t* task, Operation op){
+void create_task(pthread_t* task, int min, int max, int* t1, int* t2, int* t3){
+	Operation op = init_operation(min,max,t1,t2,t3);
 	//creation d'un tableau à MIN_MAX entrés
-	if(pthread_create(task, NULL, execute_task,(void *) op)){
+	//printf("\nFom create_task min: %d max:%d", op->min, op->max);
+	if(pthread_create(task, NULL, execute_task,op)){
 		error_message("pthread_create","Erreur lors de la création du thread");
 		return;
 	}
@@ -232,22 +216,27 @@ void create_task(pthread_t* task, Operation op){
 /*
 *	Cette fonction permet d'attendre la fin d'un processus
 */
-void wait_task(pthread_t task,Operation op){
-	if(pthread_join(task,NULL)){
+int wait_task(pthread_t task){
+	Operation op = allouer_espace_memoire_struct_operation(1);
+	if(pthread_join(task,(void **)&op)){
 		error_message("pthread_join", "Erreur lors de l'attente de la fin d'execution d'un thread");
-		return;
+		return NULL;
 	}
+	int somme = op->somme;
+	free(op);
+	return somme;
 }
 /*
 *	Cette fonction permet d'initialiser une structure operations 
 */
 Operation init_operation(int min, int max, int* t1, int* t2, int* t3){
-	Operation op;
+	Operation op = allouer_espace_memoire_struct_operation(1);
 	op->min = min;
 	op->max = max;
 	op->t1 = t1;
 	op->t2 = t2;
 	op->t3 = t3;
+//	printf("\nfrom init_operation min %d\tmax\t %d",op->min, op->max);
 	return op;
 }
 /*
@@ -259,3 +248,5 @@ void error_message(char* source,char* message){
 	perror(message);
 	puts(" ");
 }
+
+
