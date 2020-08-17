@@ -9,11 +9,13 @@ int main(int argc, char** argv) {
 	int *t1,*t2, *t3, *t3_posix, *t3_omp;
 	t3 = allouer_espace_memoire();
 	t3_posix = allouer_espace_memoire();
-	t3_omp = allouer_espace_memoire();
+	t3_omp = allouer_espace_memoire(); 
+	clearScreen();
+	printf("\n################# N = %d ####################\n", TABLE_SIZE);
 	puts("Debut d'initialisation du tableau T1");
 	t1 = initialiserTableau();
 	puts("Fin d'initialisation du tableau T1");
-	puts("Debut d'initialisation du tableau T1");
+	puts("Debut d'initialisation du tableau T2");
 	t2 = initialiserTableau();
 	puts("Fin d'initialisation du tableau T2");
 	puts("************************************");
@@ -27,6 +29,7 @@ int main(int argc, char** argv) {
 	puts("Calcul OpenMP de T3");
 	calculer_t3_posix(t1,t2, t3_posix, nb_thread);
 	puts("************************************");
+	getchar();
 	// Liberation des memoires allouer
 	free(t1);free(t2);free(t3);free(t3_omp);free(t3_posix);
 	return 0;

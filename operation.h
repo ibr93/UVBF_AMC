@@ -9,7 +9,7 @@
 #include <omp.h>
 
 /* Déclaration des constantes */
-#define TABLE_SIZE 100000000
+#define TABLE_SIZE 1000000
 #define MIN_RANDOM -10
 #define MAX_RANDOM 10
 #define MIN_MAX 2
@@ -41,4 +41,5 @@ void create_task(pthread_t* task, int min, int max, int* t1, int* t2, int* t3);
 int wait_task(pthread_t task);
 Operation init_operation(int min, int max, int* t1, int* t2, int* t3);
 void error_message(char* source,char* message);
+void clearScreen();
 #endif
