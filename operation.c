@@ -1,4 +1,4 @@
-/* Import des fichiers d'entête */
+/* Import des fichiers d'entï¿½te */
 #include "operation.h"
 
 /* La fonction initialise un tableau et retourne un pointeur vers le tableau */
@@ -14,10 +14,10 @@ int* initialiserTableau(){
 };
 
 /**
-*	La fonction prend en paramètre les tableaux d'entier t1, t2 et t3
+*	La fonction prend en paramï¿½tre les tableaux d'entier t1, t2 et t3
 *	on initialise t3 de sorte que chaque i de t3 correspond respectivement au produit de t1, t2
-*	On calcule la somme et affiche des entrés de t3
-*	On calcule et affiche la moyenne des entrées de t3	 
+*	On calcule la somme et affiche des entrï¿½s de t3
+*	On calcule et affiche la moyenne des entrï¿½es de t3	 
 */
 void calculer_t3(int* t1,int* t2, int* t3){
 	clock_t debut = chrono();
@@ -46,24 +46,24 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	double time_elapse;
 	pthread_t* threads= allouer_espace_memoire_thread(nb_thread);
 	pthread_t thread_restant;
-	puts("Debut de création des threads");
+//	puts("Debut de creation des threads");
 	// partitionnement
 	int nbr_element = TABLE_SIZE/nb_thread;
 	int nbr_element_restant =TABLE_SIZE % nbr_element;
 	int has_restant = ((nbr_element * nb_thread )!= TABLE_SIZE);
 	int temp;
 	
-	// nous vérifions s'il reste des reste tous tuples sont utilisés
+	// nous vï¿½rifions s'il reste des reste tous tuples sont utilisï¿½s
 	if(has_restant){
 		create_task(&thread_restant,nbr_element * nb_thread, TABLE_SIZE, t1, t2,t3);
 	}
-	// Nous parcourrons le tableau des threads et lancons la création des threads
+	// Nous parcourrons le tableau des threads et lancons la crï¿½ation des threads
 	for(i=0 ; i<nb_thread; i++){
 		temp = i * nbr_element;
 		create_task(&threads[i],temp, temp + nbr_element, t1, t2, t3 );
 	}
 	
-	//puts("Fin de création des threads");	
+	//puts("Fin de crï¿½ation des threads");	
 	if(has_restant){
 		somme += wait_task(thread_restant);
 	}
@@ -99,14 +99,14 @@ char* calculer_t3_omp(int* t1,int* t2, int* t3){
 };
 
 /*
-* 	Cette fonction retourne des valeurs aléatoire compris les valeurs des directives préprocesseur MAX_RANDOM et MIN_RANDOM	
+* 	Cette fonction retourne des valeurs alï¿½atoire compris les valeurs des directives prï¿½processeur MAX_RANDOM et MIN_RANDOM	
 */
 int generate_random_value(){
 	return rand()%(MAX_RANDOM - MIN_RANDOM) + MIN_RANDOM;
 }
 
 /*
-*	Cette fonction reserve de l'espace memoire correspondant a la valeur du directive préprocesseur TABLE_SIZE et retourne un pointeur d'entier
+*	Cette fonction reserve de l'espace memoire correspondant a la valeur du directive prï¿½processeur TABLE_SIZE et retourne un pointeur d'entier
 */
 int* allouer_espace_memoire(){
 	int *tableau = (int*) calloc(TABLE_SIZE, sizeof(int));
@@ -118,25 +118,25 @@ int* allouer_espace_memoire(){
     return tableau;
 }
 /*
-*	Cette fonction reserve de l'espace memoire correspondant a la valeur passé en paramètre et retourne un pointeur d'entier
+*	Cette fonction reserve de l'espace memoire correspondant a la valeur passï¿½ en paramï¿½tre et retourne un pointeur d'entier
 */
 int *allouer_espace_memoire_avec_param(int nbr){
 	int *tableau = (int*) calloc(nbr, sizeof(int));
     if(tableau == NULL)
     {
-        error_message("allouer_espace_memoire_avec_param" , "L'allocation de la mémoire à échoué");
+        error_message("allouer_espace_memoire_avec_param" , "L'allocation de la memoire a echoue");
         exit(1);
     }
     return tableau;
 }
 /*
-*	Cette fonction reserve de l'espace memoire correspondant a la valeur passé en paramètre et retourne une structure Operation
+*	Cette fonction reserve de l'espace memoire correspondant a la valeur passï¿½ en paramï¿½tre et retourne une structure Operation
 */
 Operation allouer_espace_memoire_struct_operation(int nbr){
 	Operation tableau = (Operation) calloc(nbr, sizeof(operation));
     if(tableau == NULL)
     {
-        error_message("allouer_espace_memoire_avec_param" , "L'allocation de la mémoire à échoué");
+        error_message("allouer_espace_memoire_avec_param" , "L'allocation de la memoire a echoue");
         exit(1);
     }
     return tableau;
@@ -149,15 +149,15 @@ pthread_t* allouer_espace_memoire_thread(int nb_thread){
 	pthread_t *tableau = (pthread_t*) calloc(nb_thread, sizeof(pthread_t));
     if(tableau == NULL)
     {
-        error_message("allouer_espace_memoire_thread", "L'allocation de la mémoire à échoué");
+        error_message("allouer_espace_memoire_thread", "L'allocation de la memoire a echoue");
         exit(1);
     }
     return tableau;
 }
 
 /*
-*	Cette fonction retourne le nombre de clock executé depuis le lancement de l'application
-*	A noté que clock_t est un alias de Long (typedef long clock_t)
+*	Cette fonction retourne le nombre de clock executï¿½ depuis le lancement de l'application
+*	A notï¿½ que clock_t est un alias de Long (typedef long clock_t)
 */
 clock_t chrono(){
 //	printf("clock :  %f\n",(double) clock());
@@ -165,7 +165,7 @@ clock_t chrono(){
 }
 
 /*
-*	Cette fonction prend en paramètre deux nombres entiers correspondant a des nombres d'execution des clock
+*	Cette fonction prend en paramï¿½tre deux nombres entiers correspondant a des nombres d'execution des clock
 *	fait la difference et retourne le temps en seconde correspondant
 */
 double calculer_temps_operation(clock_t debut, clock_t fin){
@@ -186,7 +186,7 @@ double calculer_temps_operation(clock_t debut, clock_t fin){
 int get_thread_count(){
 	unsigned int ncores=0, nthreads=0;
 	asm("cpuid" : "=a" (ncores), "=b" (nthreads) : "a" (0xb), "c" (0x1) :);
-	printf("cores: %d\tThreads:%d\tHiperthreading:%s\n", ncores, nthreads,(ncores != nthreads)? "oui" : "non");
+	printf("\tVotre machine a %d Coeurs dont %d Threads\n", ncores, nthreads,(ncores != nthreads)? "oui" : "non");
 	return nthreads;
 //	return 10;
 }
@@ -195,8 +195,7 @@ int get_thread_count(){
 *	Cette fonction affiche les resultats d'operation
 */
 void afficherResultat(int somme, float moyenne, double time_elapse){
-	printf("\nSomme = %d ==> Moyenne = %f\n",somme, moyenne);
-	printf("Temps d'opération %lf\n", time_elapse);
+	printf("\n\tSomme = %d\n\tMoyenne = %f\n\tTemps d'operation %lf\n",somme, moyenne,time_elapse);
 }
 /*
 * cette fonction est executer dans le thread 
@@ -213,14 +212,14 @@ void *execute_task(void* args){
 	pthread_exit((void *) ak);
 }
 /*
-*	Cette fonction permet de créer les processus
+*	Cette fonction permet de crï¿½er les processus
 */
 void create_task(pthread_t* task, int min, int max, int* t1, int* t2, int* t3){
 	Operation op = init_operation(min,max,t1,t2,t3);
-	//creation d'un tableau à MIN_MAX entrés
+	//creation d'un tableau ï¿½ MIN_MAX entrï¿½s
 	//printf("\nFom create_task min: %d max:%d", op->min, op->max);
 	if(pthread_create(task, NULL, execute_task,op)){
-		error_message("pthread_create","Erreur lors de la création du thread");
+		error_message("pthread_create","Erreur lors de la creation du thread");
 		return;
 	}
 }
@@ -231,7 +230,7 @@ int wait_task(pthread_t task){
 	Operation op = allouer_espace_memoire_struct_operation(1);
 	if(pthread_join(task,(void **)&op)){
 		error_message("pthread_join", "Erreur lors de l'attente de la fin d'execution d'un thread");
-		return NULL;
+		return -1;
 	}
 	int somme = op->somme;
 	free(op);
@@ -252,23 +251,22 @@ Operation init_operation(int min, int max, int* t1, int* t2, int* t3){
 }
 /*
 *	Cette fonction est un refractoring des messages d'erreurs
-*	Elle prend en paramètre la source et le message 
+*	Elle prend en paramï¿½tre la source et le message 
 */
 void error_message(char* source,char* message){
 	puts(source);
 	perror(message);
-	puts(" ");
 }
-
+/*
+*	La fonction permet d'effacer la console
+*/
 void clearScreen()
 {
 	#ifdef _WIN32
     	system("cls");
 	#elif defined(unix) || defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
  	   system("clear");
-	//add some other OSes here if needed
 	#else
-    #error "OS not supported."
-    //you can also throw an exception indicating the function can't be used
+    #error "SystÃ¨me d'exploitation non supporte."
 #endif
 }
