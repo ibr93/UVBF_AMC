@@ -21,5 +21,5 @@ operation.o : operation.h operation.c
 	$(CC) operation.c -c $(CFLAGS)
 
  clean:
-	rm -f *.o
+	rm -f *.o *.s *.i
 	rm -f *~
