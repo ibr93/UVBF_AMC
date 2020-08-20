@@ -2,7 +2,7 @@
 # Déclaration des macros
 
 CC = gcc
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -O3 -fopenmp -lpthread
 LDFLAGS = -lm 
 
 .PHONY:  all clean           
