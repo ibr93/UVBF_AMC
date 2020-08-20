@@ -1,5 +1,9 @@
 main.o
+main.s
+main.i
 operation.o
+operation.i
+operation.s
 Makefile.win
 Projet1.exe
 Projet1.dev
