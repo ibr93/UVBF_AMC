@@ -6,9 +6,10 @@ CFLAGS = -s -fomit-frame-pointer -O -fasynchronous-unwind-tables -g -save-temps 
 EXEC=main
 LDFLAGS = -lm -fopenmp -lpthread
 
-.PHONY: clean  all
+.PHONY: clean all
 
-all : clean $(EXEC)
+all : main
+	./main
 
 main : main.o operation.o
 	$(CC) $^ -o $@ $(LDFLAGS)
