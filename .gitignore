@@ -3,4 +3,5 @@ operation.o
 Makefile.win
 Projet1.exe
 Projet1.dev
+main
 Projet_Architecture_Multi_Coeurs.pdf

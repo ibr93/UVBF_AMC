@@ -2,25 +2,23 @@
 # Déclaration des macros
 
 CC = gcc
-CFLAGS = -Wall -O3 -fopenmp -lpthread
-LDFLAGS = -lm 
+CFLAGS = -s -fomit-frame-pointer -O -fasynchronous-unwind-tables -g -save-temps -Wshadow -fverbose-asm -finstrument-functions -pedantic
+EXEC=main
+LDFLAGS = -lm -fopenmp -lpthread
 
-.PHONY:  all clean           
+.PHONY: clean  all
 
-all : prog
+all : clean $(EXEC)
 
-prog : main.o operation.o
+main : main.o operation.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 main.o : main.c operation.h
-	$(CC) main.c -c $(CFLAGS) 
+	$(CC) main.c -c $(CFLAGS)
 
 operation.o : operation.h operation.c
 	$(CC) operation.c -c $(CFLAGS)
 
-# etc...
-
  clean:
 	rm -f *.o
-	rm -f *~  
- 
+	rm -f *~

@@ -11,7 +11,7 @@ int* initialiserTableau(){
 	//	printf("Tableau indice %d %d \n", i, tableau[i]);
 	}
 	return tableau;
-};
+}
 
 /**
 *	La fonction prend en param�tre les tableaux d'entier t1, t2 et t3
@@ -33,7 +33,7 @@ void calculer_t3(int* t1,int* t2, int* t3){
 	time_elapse = calculer_temps_operation(debut, fin);
 	moyenne =(float) somme / TABLE_SIZE;
 	afficherResultat(somme, moyenne, time_elapse);
-};
+}
 
 /**
 *	La fonction est une version multi thred de la fonction calculer_t3
@@ -49,7 +49,6 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 //	puts("Debut de creation des threads");
 	// partitionnement
 	int nbr_element = TABLE_SIZE/nb_thread;
-	int nbr_element_restant =TABLE_SIZE % nbr_element;
 	int has_restant = ((nbr_element * nb_thread )!= TABLE_SIZE);
 	int temp;
 	
@@ -76,12 +75,12 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	time_elapse = calculer_temps_operation(debut, fin);
 	afficherResultat(somme, moyenne, time_elapse);
 	free(threads);
-};
+}
 
 /**
 *	La fonction est une version OpenMP de la fonction calculer_t3_sequenciel
 */
-char* calculer_t3_omp(int* t1,int* t2, int* t3){
+void calculer_t3_omp(int* t1,int* t2, int* t3){
 	clock_t debut = chrono();
 	int somme = 0, i =0;
 	float moyenne = 0;
@@ -96,7 +95,7 @@ char* calculer_t3_omp(int* t1,int* t2, int* t3){
 	fin = chrono();
 	time_elapse = calculer_temps_operation(debut, fin);
 	afficherResultat(somme, moyenne, time_elapse);
-};
+}
 
 /*
 * 	Cette fonction retourne des valeurs al�atoire compris les valeurs des directives pr�processeur MAX_RANDOM et MIN_RANDOM	
@@ -186,7 +185,7 @@ double calculer_temps_operation(clock_t debut, clock_t fin){
 int get_thread_count(){
 	unsigned int ncores=0, nthreads=0;
 	asm("cpuid" : "=a" (ncores), "=b" (nthreads) : "a" (0xb), "c" (0x1) :);
-	printf("\tVotre machine a %d Coeurs dont %d Threads\n", ncores, nthreads,(ncores != nthreads)? "oui" : "non");
+	printf("\tVotre machine a %d Coeurs dont %d Threads\n", ncores, nthreads);
 	return nthreads;
 //	return 10;
 }
