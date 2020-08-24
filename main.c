@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
 	puts("######################### Calcul POSIX de T3 ###################################");
 	calculer_t3_posix(t1,t2, t3_posix, nb_thread);
 	puts("######################## Calcul OpenMP de T3 ##################################");
-	calculer_t3_posix(t1,t2, t3_posix, nb_thread);
-	getchar();
+	calculer_t3_omp(t1,t2, t3_posix);
+//	getchar();
 	// Liberation des memoires allouer
 	free(t1);free(t2);free(t3);free(t3_omp);free(t3_posix);
 	return 0;

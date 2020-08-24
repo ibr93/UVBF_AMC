@@ -46,26 +46,17 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	double time_elapse;
 	pthread_t* threads= allouer_espace_memoire_thread(nb_thread);
 	pthread_t thread_restant;
-//	puts("Debut de creation des threads");
 	// partitionnement
 	int nbr_element = TABLE_SIZE/nb_thread;
-	int has_restant = ((nbr_element * nb_thread )!= TABLE_SIZE);
 	int temp;
-	
-	// nous v�rifions s'il reste des reste tous tuples sont utilis�s
-	if(has_restant){
-		create_task(&thread_restant,nbr_element * nb_thread, TABLE_SIZE, t1, t2,t3);
-	}
+	int nb_operation = nb_thread -1;
 	// Nous parcourrons le tableau des threads et lancons la cr�ation des threads
-	for(i=0 ; i<nb_thread; i++){
+	for(i=0 ; i<nb_operation; i++){
 		temp = i * nbr_element;
 		create_task(&threads[i],temp, temp + nbr_element, t1, t2, t3 );
 	}
-	
-	//puts("Fin de cr�ation des threads");	
-	if(has_restant){
-		somme += wait_task(thread_restant);
-	}
+	// Creation du dernier thread avec le reste des operations
+	create_task(&threads[nb_operation],nbr_element * nb_thread, TABLE_SIZE, t1, t2, t3 );
 	
 	for(i=0 ; i<nb_thread; i++){
 		somme += wait_task(threads[i]);
