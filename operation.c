@@ -44,21 +44,20 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	float moyenne = 0;
 	clock_t fin;
 	double time_elapse;
-	pthread_t* threads= allouer_espace_memoire_thread(nb_thread);
+	pthread_t* threads= allouer_espace_memoire_thread(nb_thread +1);
 	pthread_t thread_restant;
 	// partitionnement
 	int nbr_element = TABLE_SIZE/nb_thread;
 	int temp;
-	int nb_operation = nb_thread -1;
 	// Nous parcourrons le tableau des threads et lancons la cr�ation des threads
-	for(i=0 ; i<nb_operation; i++){
+	for(i=0 ; i<nb_thread; i++){
 		temp = i * nbr_element;
 		create_task(&threads[i],temp, temp + nbr_element, t1, t2, t3 );
 	}
 	// Creation du dernier thread avec le reste des operations
-	create_task(&threads[nb_operation],nbr_element * nb_thread, TABLE_SIZE, t1, t2, t3 );
+	create_task(&threads[nb_thread],nbr_element * nb_thread, TABLE_SIZE, t1, t2, t3 );
 	
-	for(i=0 ; i<nb_thread; i++){
+	for(i=0 ; i<nb_thread +1; i++){
 		somme += wait_task(threads[i]);
 	}
 	moyenne =(float) somme / TABLE_SIZE;
@@ -197,6 +196,7 @@ void *execute_task(void* args){
 	for(i = ak->min; i<ak->max; i++){
 			ak->t3[i]= ak->t1[i] * ak->t2[i];
 			ak->somme += ak->t3[i];
+		//	printf("\nI %d", i);
 	}
 //	printf("\nFom execute_task min: %d max:%d somme: %d", ak->min, ak->max, ak->somme);
 	pthread_exit((void *) ak);
@@ -207,7 +207,7 @@ void *execute_task(void* args){
 void create_task(pthread_t* task, int min, int max, int* t1, int* t2, int* t3){
 	Operation op = init_operation(min,max,t1,t2,t3);
 	//creation d'un tableau � MIN_MAX entr�s
-	//printf("\nFom create_task min: %d max:%d", op->min, op->max);
+//	printf("\nFom create_task min: %d max:%d", op->min, op->max);
 	if(pthread_create(task, NULL, execute_task,op)){
 		error_message("pthread_create","Erreur lors de la creation du thread");
 		return;
