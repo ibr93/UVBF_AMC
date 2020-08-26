@@ -45,7 +45,6 @@ void calculer_t3_posix(int* t1,int* t2, int* t3, int nb_thread){
 	clock_t fin;
 	double time_elapse;
 	pthread_t* threads= allouer_espace_memoire_thread(nb_thread +1);
-	pthread_t thread_restant;
 	// partitionnement
 	int nbr_element = TABLE_SIZE/nb_thread;
 	int temp;
